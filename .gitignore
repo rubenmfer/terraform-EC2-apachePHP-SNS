@@ -1,0 +1,15 @@
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+*.tfvars
+*.tfvars.json
+ssh.pem
+
+# logs
+*.log
+
+# Directories
+.terraform/
+
+

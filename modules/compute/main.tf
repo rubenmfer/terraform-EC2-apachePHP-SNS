@@ -36,7 +36,9 @@ resource "aws_instance" "web" {
       "sudo /tmp/${var.script}",
       "sudo mv /tmp/index.html /var/www/html/",
       "sudo mv /tmp/submit.php /var/www/html/",
-      "sudo sed -i 's/$snsTopicArn = ;/$snsTopicArn = ${var.sns_topic_arn};/g' /var/www/html/submit.php"
+      "sudo sed -i 's/arn:aws:sns:us-east-1:XXXXXXX:test/${var.sns_topic_arn}/g' /var/www/html/submit.php",
+      "sudo sed -i '/AddEncoding x-gzip .gz .tgz/a AddType application/x-httpd-php .php' /etc/httpd/conf/httpd.conf",
+      "sudo systemctl restart httpd"
     ]
   }
  
@@ -47,23 +49,7 @@ resource "aws_instance" "web" {
     host        = self.public_ip
   }
 }
-/*
-resource "terraform_data" "configure-consul-ips" {
-  connection {
-    type        = "ssh"
-    user        = var.ssh_user
-    private_key = file("./modules/compute/userdata/${var.ssh_fname}")  # Ruta a tu clave privada
-    host        = aws_instance.web.public_ip
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo echo 'prueba' >> /home/ec2-user/hola.txt"
-      
-    ]
-  }
-}
 
-*/
 
 resource "aws_security_group" "web_sg" {
   name        = "web_sg"
@@ -90,3 +76,15 @@ resource "aws_security_group" "web_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+/*
+data "aws_iam_role" "LabRole" {
+  name = "LabRole"
+}
+
+resource "aws_iam_policy_attachment" "sns_policy" {
+  name       = "sns-policy"
+  roles      = [data.aws_iam_role.LabRole.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+}
+*/
