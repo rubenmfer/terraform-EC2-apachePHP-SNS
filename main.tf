@@ -1,7 +1,7 @@
 module "sns" {
-    source  = "./modules/sns"
-    sns_topic_name = "formulario"
-    email   = "ruben.martinezfernandez@tajamar365.com"
+    source          = "./modules/sns"
+    sns_topic_name  = "formulario"
+    email           = var.email
 }
 
 module "compute" {
